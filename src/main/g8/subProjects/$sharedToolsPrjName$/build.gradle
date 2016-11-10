@@ -1,0 +1,63 @@
+def playVersion = '$PlayVersion$'
+def scalaVersion = '2.11'
+
+buildscript {
+    ext.kotlin_version = '$KotlinVersion$'
+    repositories {
+        maven {
+            url "https://plugins.gradle.org/m2/"
+        }
+    }
+    dependencies {
+        classpath "org.jetbrains.kotlin:kotlin-gradle-plugin:\$kotlin_version"
+        classpath "gradle.plugin.org.kt3k:ebean-enhance-plugin:2.0.5"
+    }
+}
+
+apply plugin: "kotlin"
+apply plugin: "com.github.kt3k.ebean.enhance"
+
+repositories {
+    jcenter()
+    maven {
+        name "typesafe-maven-release"
+        url "https://repo.typesafe.com/typesafe/maven-releases"
+    }
+    ivy {
+        name "typesafe-ivy-release"
+        url "https://repo.typesafe.com/typesafe/ivy-releases"
+        layout "ivy"
+    }
+}
+
+dependencies {
+    ['filters-helpers', 'play-logback', 'play-jdbc', 'play-java', 'play-cache', 'play-ws'].each { playModule ->
+        compile "com.typesafe.play:\${playModule}_\$scalaVersion:\$playVersion"
+    }
+    compile group: "com.typesafe.play", name: "play-ebean_\$scalaVersion", version: "$PlayEbeanVersion$"
+    compile "org.jetbrains.kotlin:kotlin-stdlib:\$kotlin_version"
+    compile "org.jetbrains.kotlin:kotlin-reflect:\$kotlin_version"
+    compile group: 'org.jodd', name: 'jodd-core', version: '3.7'
+    compile group: 'org.jodd', name: 'jodd-bean', version: '3.7'
+    compile group: 'org.jodd', name: 'jodd-http', version: '3.7'
+    compile group: 'org.jodd', name: 'jodd-mail', version: '3.7'
+    compile group: 'mysql', name: 'mysql-connector-java', version: '5.1.39'
+    compile group: 'commons-io', name: 'commons-io', version: '2.5'
+    compile group: 'org.apache.commons', name: 'commons-exec', version: '1.3'
+    compile group: 'org.simpleframework', name: 'simple-xml', version: '2.7.1'
+    compile group: 'org.freemarker', name: 'freemarker', version: '2.3.21'
+    compile group: 'com.fasterxml.jackson.module', name: 'jackson-module-kotlin', version: '2.7.7'
+}
+
+sourceSets {
+    main.kotlin.srcDirs += 'app'
+    main.java.srcDirs += 'app'
+    main.resources.srcDirs += 'conf'
+}
+
+ebeanEnhance {
+    packages = 'models.**'
+}
+
+
+

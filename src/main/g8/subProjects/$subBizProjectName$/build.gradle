@@ -1,0 +1,50 @@
+def playVersion = '$PlayVersion$'
+def scalaVersion = '2.11'
+
+buildscript {
+    ext.kotlin_version = '$KotlinVersion$'
+    repositories {
+        maven {
+            url "https://plugins.gradle.org/m2/"
+        }
+    }
+    dependencies {
+        classpath "org.jetbrains.kotlin:kotlin-gradle-plugin:\$kotlin_version"
+        classpath "gradle.plugin.org.kt3k:ebean-enhance-plugin:2.0.5"
+    }
+}
+
+apply plugin: "kotlin"
+apply plugin: "com.github.kt3k.ebean.enhance"
+
+repositories {
+    jcenter()
+    maven {
+        name "typesafe-maven-release"
+        url "https://repo.typesafe.com/typesafe/maven-releases"
+    }
+    ivy {
+        name "typesafe-ivy-release"
+        url "https://repo.typesafe.com/typesafe/ivy-releases"
+        layout "ivy"
+    }
+}
+
+dependencies {
+    ['filters-helpers', 'play-logback', 'play-jdbc', 'play-java', 'play-cache', 'play-ws'].each { playModule ->
+        compile "com.typesafe.play:\${playModule}_\$scalaVersion:\$playVersion"
+    }
+    compile "org.jetbrains.kotlin:kotlin-stdlib:\$kotlin_version"
+    compile "org.jetbrains.kotlin:kotlin-reflect:\$kotlin_version"
+    compile project(':subProjects:$sharedToolsPrjName$')
+}
+
+sourceSets {
+    main.kotlin.srcDirs += 'app'
+    main.java.srcDirs += 'app'
+    main.resources.srcDirs += 'conf'
+}
+
+ebeanEnhance {
+    packages = 'models.**'
+}
