@@ -41,3 +41,9 @@ dependencies {
     play project(':subProjects:$sharedToolsPrjName$')
     play project(':subProjects:$subBizProjectName$')
 }
+
+tasks.withType(CreateStartScripts) {
+    it.unixStartScriptGenerator.template = resources.text.fromFile('unixStartScript.txt')
+    it.applicationName = '$name$'
+    it.mainClassName = 'play.core.server.ProdServerStart'
+}
