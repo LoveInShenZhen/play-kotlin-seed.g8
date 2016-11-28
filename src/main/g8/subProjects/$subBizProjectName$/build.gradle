@@ -31,6 +31,8 @@ repositories {
 }
 
 dependencies {
+    // compile fileTree(dir: 'libs', include: '*.jar')
+    // runtime fileTree(dir: 'libs', include: '*.jar')
     ['filters-helpers', 'play-logback', 'play-jdbc', 'play-java', 'play-cache', 'play-ws'].each { playModule ->
         compile "com.typesafe.play:\${playModule}_\$scalaVersion:\$playVersion"
     }
