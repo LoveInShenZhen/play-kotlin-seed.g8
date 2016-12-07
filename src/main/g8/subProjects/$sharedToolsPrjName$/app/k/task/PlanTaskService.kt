@@ -336,7 +336,7 @@ object PlanTaskService {
 
     fun Enabled(): Boolean {
         val enable = Hub.configuration().getBoolean("k.planTaskService", false)
-        if (enable) {
+        if (enable && DB.DbEnabled()) {
             try {
                 if (DB.TableExists("plan_task")) {
                     return true

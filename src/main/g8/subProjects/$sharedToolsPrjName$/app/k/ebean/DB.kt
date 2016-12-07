@@ -235,4 +235,9 @@ object DB {
         return count > 0
     }
 
+    fun DbEnabled(): Boolean {
+        val cnn = Hub.configuration().getString("db.default.url", "")
+        return cnn.isNotBlank()
+    }
+
 }
