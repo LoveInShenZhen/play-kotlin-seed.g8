@@ -49,6 +49,7 @@ tasks.withType(CreateStartScripts) {
 }
 
 tasks.withType(org.gradle.play.tasks.PlayRun) {
+    it.httpPort = 9000
     if (project.hasProperty("debug")) {
         def debugPort = "9999"
         if (project.findProperty("debug").toString().isNumber()) {
