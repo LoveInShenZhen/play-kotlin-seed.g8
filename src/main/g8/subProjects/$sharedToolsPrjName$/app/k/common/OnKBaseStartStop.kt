@@ -2,6 +2,7 @@ package k.common
 
 import com.fasterxml.jackson.databind.module.SimpleModule
 import jodd.datetime.JDateTime
+import jodd.util.ClassLoaderUtil
 import k.common.json.JDateTimeJsonDeserializer
 import k.common.json.JDateTimeJsonSerializer
 import k.task.PlanTaskService
@@ -11,6 +12,7 @@ import play.cache.CacheApi
 import play.data.FormFactory
 import play.inject.ApplicationLifecycle
 import play.libs.Json
+import java.io.File
 import java.util.concurrent.CompletableFuture
 import javax.inject.Inject
 import javax.inject.Singleton
@@ -34,6 +36,14 @@ constructor(applicationLifecycle: ApplicationLifecycle,
         Hub.setConfiguration(configuration)
         Hub.setCacheApi(cacheApi)
         Hub.setFormFactory(formFactory)
+
+        val runtimeClassPaths = ClassLoaderUtil.getDefaultClasspath(Hub.application().classloader()).map { it.absolutePath }.toHashSet()
+        System.getProperty("unManagedJars", "").split(":").forEach {
+            if (!runtimeClassPaths.contains(it)) {
+                Helper.DLog("Add unManagedJar: $it to runtime ClassPath")
+                ClassLoaderUtil.addFileToClassPath(File(it), Hub.application().classloader())
+            }
+        }
 
         applicationLifecycle.addStopHook {
             OnStop()

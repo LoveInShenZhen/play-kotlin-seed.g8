@@ -12,6 +12,7 @@ GET        /api/AddSampleTask                       controllers.Sample.AddSample
 
 # 内置 API 方法
 GET        /api/apis                                controllers.BuiltIn.Apis
+GET        /api/RuntimeClassPath                    controllers.BuiltIn.RuntimeClassPath
 GET        /api/apiIndex                            controllers.BuiltIn.ApiIndex
 GET        /api/apiSample                           controllers.BuiltIn.ApiTest(apiUrl)
 GET        /api/apiMarkdown                         controllers.BuiltIn.ApiMarkdown

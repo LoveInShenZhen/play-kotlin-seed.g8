@@ -1,5 +1,6 @@
 package controllers
 
+import controllers.replys.RuntimeClassPathReply
 import k.aop.annotations.Comment
 import k.aop.annotations.JsonApi
 import k.common.apidoc.ApiDefinition
@@ -26,6 +27,14 @@ constructor(var definedApis: DefinedApis,
     fun Apis(): Result {
         val reply = definedApis.JsonApis()
         return ok(reply.toJsonStr()).`as`("application/json; charset=UTF-8")
+    }
+
+    @Comment("列出运行时的ClassPath")
+    @JsonApi(ReplyClass = RuntimeClassPathReply::class)
+    fun RuntimeClassPath():Result {
+        val reply = RuntimeClassPathReply()
+        reply.Load()
+        return ok(reply)
     }
 
     fun ApiIndex(): Result {
