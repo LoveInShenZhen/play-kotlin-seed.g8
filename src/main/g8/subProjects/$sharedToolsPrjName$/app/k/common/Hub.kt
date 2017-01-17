@@ -20,7 +20,7 @@ object Hub {
         if (Hub.application == null) {
             throw BizLogicException("OnKBaseStartStop 模块没有完成初始化")
         }
-        return Hub.application as Application
+        return Hub.application!!
     }
 
 
@@ -34,7 +34,7 @@ object Hub {
         if (Hub.configuration == null) {
             throw BizLogicException("OnKBaseStartStop 模块没有完成初始化")
         }
-        return Hub.configuration as Configuration
+        return Hub.configuration!!
     }
 
     private var cacheApi: CacheApi? = null
@@ -47,7 +47,7 @@ object Hub {
         if (Hub.cacheApi == null) {
             throw BizLogicException("OnKBaseStartStop 模块没有完成初始化")
         }
-        return Hub.cacheApi as CacheApi
+        return Hub.cacheApi!!
     }
 
     private var formFactory: FormFactory? = null
@@ -60,6 +60,6 @@ object Hub {
         if (Hub.formFactory == null) {
             throw BizLogicException("OnKBaseStartStop 模块没有完成初始化")
         }
-        return Hub.formFactory as FormFactory
+        return Hub.formFactory!!
     }
 }
