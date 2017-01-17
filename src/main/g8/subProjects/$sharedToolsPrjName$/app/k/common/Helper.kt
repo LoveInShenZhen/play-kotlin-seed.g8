@@ -54,14 +54,13 @@ object Helper {
 
     fun ToJsonStringPretty(obj: Any): String {
         val jsonNode = Json.toJson(obj)
-        val mapper = ObjectMapper().registerKotlinModule()
-
+        val mapper = Json.mapper()
         return mapper.writerWithDefaultPrettyPrinter().writeValueAsString(jsonNode)
     }
 
     fun FormatJson(jsonStr: String): String {
         val jsonNode = Json.parse(jsonStr)
-        val mapper = ObjectMapper().registerKotlinModule()
+        val mapper = Json.mapper()
         return mapper.writerWithDefaultPrettyPrinter().writeValueAsString(jsonNode)
     }
 

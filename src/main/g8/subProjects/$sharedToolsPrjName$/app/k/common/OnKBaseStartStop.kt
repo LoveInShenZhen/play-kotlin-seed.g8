@@ -1,6 +1,7 @@
 package k.common
 
 import com.fasterxml.jackson.databind.module.SimpleModule
+import com.fasterxml.jackson.module.kotlin.registerKotlinModule
 import jodd.datetime.JDateTime
 import jodd.util.ClassLoaderUtil
 import k.common.json.JDateTimeJsonDeserializer
@@ -75,5 +76,6 @@ constructor(applicationLifecycle: ApplicationLifecycle,
         module.addDeserializer(JDateTime::class.java, JDateTimeJsonDeserializer())
 
         Json.mapper().registerModule(module)
+        Json.mapper().registerKotlinModule()
     }
 }
