@@ -39,10 +39,10 @@ dependencies {
     compile group: "com.typesafe.play", name: "play-ebean_\$scalaVersion", version: "$PlayEbeanVersion$"
     compile "org.jetbrains.kotlin:kotlin-stdlib:\$kotlin_version"
     compile "org.jetbrains.kotlin:kotlin-reflect:\$kotlin_version"
-    compile group: 'org.jodd', name: 'jodd-core', version: '3.7'
-    compile group: 'org.jodd', name: 'jodd-bean', version: '3.7'
-    compile group: 'org.jodd', name: 'jodd-http', version: '3.7'
-    compile group: 'org.jodd', name: 'jodd-mail', version: '3.7'
+    compile group: 'org.jodd', name: 'jodd-core', version: '3.8.1'
+    compile group: 'org.jodd', name: 'jodd-bean', version: '3.8.1'
+    compile group: 'org.jodd', name: 'jodd-http', version: '3.8.1'
+    compile group: 'org.jodd', name: 'jodd-mail', version: '3.8.1'
     compile group: 'mysql', name: 'mysql-connector-java', version: '5.1.39'
     compile group: 'commons-io', name: 'commons-io', version: '2.5'
     compile group: 'org.apache.commons', name: 'commons-exec', version: '1.3'
