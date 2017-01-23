@@ -1,9 +1,12 @@
 package k.common
 
+import akka.actor.ActorSystem
 import play.Application
 import play.Configuration
 import play.cache.CacheApi
 import play.data.FormFactory
+import play.inject.Injector
+import scala.concurrent.ExecutionContextExecutor
 
 /**
  * Created by kk on 16/5/6.
@@ -61,5 +64,17 @@ object Hub {
             throw BizLogicException("OnKBaseStartStop 模块没有完成初始化")
         }
         return Hub.formFactory!!
+    }
+
+    fun injector(): Injector {
+        return application().injector()
+    }
+
+    fun ActorSystem(): ActorSystem {
+        return injector().instanceOf(akka.actor.ActorSystem::class.java)
+    }
+
+    fun ExecutionContext(): ExecutionContextExecutor {
+        return injector().instanceOf(ExecutionContextExecutor::class.java)
     }
 }
