@@ -1,8 +1,9 @@
 package k.common
 
-import com.fasterxml.jackson.databind.ObjectMapper
-import com.fasterxml.jackson.module.kotlin.registerKotlinModule
+import com.fasterxml.jackson.databind.JsonNode
 import com.google.common.hash.Hashing
+import com.kjetland.jackson.jsonSchema.JsonSchemaGenerator
+import org.apache.commons.lang3.RandomUtils
 import org.apache.commons.lang3.StringUtils
 import play.Logger
 import play.libs.Json
@@ -10,6 +11,9 @@ import java.io.File
 import java.math.RoundingMode
 import java.nio.charset.Charset
 import java.text.DecimalFormat
+import java.text.SimpleDateFormat
+import java.util.*
+
 
 /**
  * Created by kk on 16/7/2.
@@ -41,7 +45,7 @@ object Helper {
         Logger.debug(msg)
     }
 
-    fun DLog(ansiColor: AnsiColor, bgColor: AnsiColor,  message: String) {
+    fun DLog(ansiColor: AnsiColor, bgColor: AnsiColor, message: String) {
         val msg = "${ansiColor.code}${bgColor.code}$message${AnsiColor.RESET.code}"
         Logger.debug(msg)
     }
@@ -67,6 +71,10 @@ object Helper {
     fun <A> FromJsonString(jsonStr: String, clazz: Class<A>): A {
         val node = Json.parse(jsonStr)
         return Json.fromJson(node, clazz)
+    }
+
+    fun JsonSchemaOf(clazz: Class<*>): JsonNode {
+        return JsonSchemaGenerator(Json.mapper()).generateJsonSchema(clazz)
     }
 
     //</editor-fold>
@@ -161,7 +169,80 @@ object Helper {
         md = StringUtils.replace(md, "*", "\\*")
         return md
     }
-
     //</editor-fold>
 
+    //<editor-fold desc="Date extend functions">
+
+    fun FromGMT(time_str: String): Date {
+        val df = SimpleDateFormat("EEE, dd MMM yyyy HH:mm:ss", Locale.US)
+        df.setTimeZone(TimeZone.getTimeZone("GMT"))
+
+        try {
+            return df.parse(time_str.replace("GMT", "").trim())
+        } catch (ex: Exception) {
+            throw BizLogicException("不合理的 GMT String: %s", time_str)
+        }
+    }
+
+    fun ToGMT(date: Date): String {
+        val df = SimpleDateFormat("EEE, dd MMM yyyy HH:mm:ss", Locale.US)
+        df.setTimeZone(TimeZone.getTimeZone("GMT"))
+
+        return df.format(date) + " GMT"
+    }
+
+    fun IncTimeInDay(date: Date, days: Int): Date {
+        if (days == 0) {
+            return date
+        }
+        val ca = Calendar.getInstance()
+        ca.time = date
+        ca.add(Calendar.DAY_OF_YEAR, days)
+        return ca.time
+    }
+    //</editor-fold>
 }
+
+
+//<editor-fold desc="String extend functions">
+
+fun String.MixUpLowCase(): String {
+    val cm = mapOf('a' to 'z',
+            'b' to 'k',
+            'c' to 'u',
+            'd' to 'w',
+            'e' to 'j',
+            'f' to 'x',
+            'A' to 'T',
+            'B' to 'F',
+            'C' to 'A',
+            'D' to 'P',
+            'E' to 'S',
+            'F' to 'H',
+            '0' to 'y')
+
+    return this.toCharArray().map {
+        if (it.isLetter() || it == '0') {
+            val x = if (RandomUtils.nextBoolean()) it.toUpperCase() else it.toLowerCase()
+            val y = if (cm[x] == null) x else cm[x]!!
+            return@map if (RandomUtils.nextBoolean()) y.toUpperCase() else y.toLowerCase()
+        }
+
+        return@map it
+    }.joinToString("")
+}
+
+fun CharSequence?.notNullOrBlank(): Boolean {
+    return this != null && this.isNotBlank()
+}
+
+//</editor-fold>
+
+//<editor-fold desc="Set<out E> extend functions">
+
+fun <E> Set<E>.notContains(element: @UnsafeVariance E): Boolean {
+    return !this.contains(element)
+}
+
+//</editor-fold>
+

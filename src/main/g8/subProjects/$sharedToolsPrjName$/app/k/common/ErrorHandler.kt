@@ -1,6 +1,5 @@
 package k.common
 
-import jodd.exception.ExceptionUtil
 import k.controllers.JsonpController
 import k.reply.ReplyBase
 import play.Configuration
@@ -8,7 +7,6 @@ import play.Environment
 import play.api.OptionalSourceMapper
 import play.api.routing.Router
 import play.http.DefaultHttpErrorHandler
-import play.http.HttpErrorHandler
 import play.mvc.Http
 import play.mvc.Result
 import play.mvc.Results
@@ -41,8 +39,9 @@ constructor(configuration: Configuration?,
     override fun onServerError(request: Http.RequestHeader?, exception: Throwable?): CompletionStage<Result> {
         if (request!!.uri().startsWith("/api/")) {
             val reply = ReplyBase()
-            reply.errmsg = ExceptionUtil.exceptionChainToString(exception)
-            reply.ret = -1
+            if (exception != null) {
+                reply.OnError(exception)
+            }
             return CompletableFuture.completedFuture(JsonpController.ok(reply))
         } else {
             return CompletableFuture.completedFuture(Results.internalServerError("A server error occurred: " + exception!!.message))

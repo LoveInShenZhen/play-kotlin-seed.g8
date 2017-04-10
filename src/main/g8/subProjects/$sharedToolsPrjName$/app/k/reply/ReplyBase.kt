@@ -2,7 +2,9 @@ package k.reply
 
 
 import com.fasterxml.jackson.databind.JsonNode
+import jodd.exception.ExceptionUtil
 import k.aop.annotations.Comment
+import k.common.BizLogicException
 import k.common.Helper
 import play.libs.Json
 
@@ -47,5 +49,15 @@ open class ReplyBase {
         ret = 0
         errmsg = "OK"
         errors = null
+    }
+
+    fun OnError(ex: Throwable) {
+        if (ex is BizLogicException) {
+            this.ret = ex.ErrCode
+            this.errmsg = ex.message
+        } else {
+            this.ret = -1
+            this.errmsg = ExceptionUtil.exceptionStackTraceToString(ex)
+        }
     }
 }

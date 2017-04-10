@@ -22,7 +22,7 @@ object FileTemplateHelper {
         try {
             templateConf.setDirectoryForTemplateLoading(TemplateDir())
         } catch (e: IOException) {
-            Logger.error(ExceptionUtil.exceptionChainToString(e))
+            Logger.error(ExceptionUtil.exceptionStackTraceToString(e))
         }
 
     }

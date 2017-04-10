@@ -129,19 +129,9 @@ class JsonApiAction : Action<JsonApi>() {
                 throw RuntimeException(t)
             }
 
-        } catch (ex: BizLogicException) {
+        }  catch (ex: Exception) {
             val reply = ReplyBase()
-            reply.ret = ex.ErrCode
-            reply.errmsg = ex.message
-            val result = JsonpController.ok(reply)
-            handleApiException(ctx, ex)
-            log(ex.message!!)
-            return CompletableFuture.completedFuture(result)
-
-        } catch (ex: Exception) {
-            val reply = ReplyBase()
-            reply.ret = -1
-            reply.errmsg = ExceptionUtil.exceptionChainToString(ex)
+            reply.OnError(ex)
             val result = JsonpController.ok(reply)
             handleApiException(ctx, ex)
             log(ex.message!!)
@@ -159,20 +149,9 @@ class JsonApiAction : Action<JsonApi>() {
 
             return Ebean.execute<CompletionStage<Result>>(txScope, txCallable)
 
-        } catch (ex: BizLogicException) {
-            val reply = ReplyBase()
-            reply.ret = ex.ErrCode
-            reply.errmsg = ex.message
-            val result = JsonpController.ok(reply)
-            handleApiException(ctx, ex)
-            log(ex.message!!)
-            return CompletableFuture.completedFuture(result)
-
         } catch (ex: Exception) {
             val reply = ReplyBase()
-            reply.ret = -1
-            reply.errmsg = ExceptionUtil.exceptionChainToString(ex)
-            Logger.warn(ExceptionUtil.exceptionChainToString(ex))
+            reply.OnError(ex)
             val result = JsonpController.ok(reply)
             handleApiException(ctx, ex)
             log(ex.message!!)
@@ -183,7 +162,7 @@ class JsonApiAction : Action<JsonApi>() {
 
     private fun handleApiException(ctx: Http.Context, ex: Exception) {
         // todo send email when has json exceptions
-        Logger.error("api url: ${ctx.toString()}\n${ExceptionUtil.exceptionChainToString(ex)}")
+        Logger.error("api url: ${ctx.toString()}\n${ExceptionUtil.exceptionStackTraceToString(ex)}")
     }
 
 }

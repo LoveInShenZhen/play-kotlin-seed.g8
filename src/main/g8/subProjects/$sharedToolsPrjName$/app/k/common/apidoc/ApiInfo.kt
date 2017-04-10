@@ -6,6 +6,9 @@ import k.common.Helper
 import k.common.json.JsonDataType
 import play.mvc.Controller
 import kotlin.reflect.KClass
+import kotlin.reflect.full.functions
+import kotlin.reflect.full.memberFunctions
+import kotlin.reflect.full.memberProperties
 import kotlin.reflect.functions
 import kotlin.reflect.jvm.javaType
 import kotlin.reflect.memberFunctions
@@ -167,9 +170,9 @@ constructor(
 
     companion object {
 
-        val PostJson = "POST JSON"
-        val PostForm = "POST FORM"
-        val Get = "GET"
+        const val PostJson = "POST JSON"
+        const val PostForm = "POST FORM"
+        const val Get = "GET"
 
         fun SampleJsonData(kClass: KClass<*>): String {
             val sampleDataFunc = kClass.memberFunctions.find { it.name == "SampleData" } ?: return "请在 ${kClass.qualifiedName} 实现 fun SampleData(): String"

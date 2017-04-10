@@ -19,6 +19,7 @@ import k.common.BizLogicException
 import k.common.Hub
 import javax.persistence.Entity
 import javax.persistence.Table
+import kotlin.reflect.full.memberProperties
 import kotlin.reflect.memberProperties
 
 internal class IndexInfo(var indexName: String) {
@@ -60,7 +61,7 @@ internal class IndexInfo(var indexName: String) {
 
         // 判断指定的字段是否有索引, 排除联合索引
         fun IndexExists(indexMap: Map<String, IndexInfo>, columnName: String): Boolean {
-            for ((indexName, indexInfo) in indexMap) {
+            for ((_, indexInfo) in indexMap) {
 
                 if (indexInfo.IsCombinedIndex()) continue
 

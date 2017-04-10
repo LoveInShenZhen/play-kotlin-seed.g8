@@ -30,6 +30,9 @@ constructor(applicationLifecycle: ApplicationLifecycle,
             configuration: Configuration,
             cacheApi: CacheApi,
             formFactory: FormFactory) {
+
+    private val tasksWhenStop = mutableListOf<Runnable>()
+
     init {
         // 添加 EbeanConfig 依赖, 确保在此之前, Ebean 已经正常初始化
 
@@ -68,6 +71,12 @@ constructor(applicationLifecycle: ApplicationLifecycle,
         if (PlanTaskService.Enabled()) {
             PlanTaskService.Stop()
         }
+        if (tasksWhenStop.size > 0) {
+            Helper.DLog(AnsiColor.GREEN, "KBase run registed stop tasks ...")
+            tasksWhenStop.forEach {
+                it.run()
+            }
+        }
     }
 
     private fun RegistJacksonModule() {
@@ -77,5 +86,9 @@ constructor(applicationLifecycle: ApplicationLifecycle,
 
         Json.mapper().registerModule(module)
         Json.mapper().registerKotlinModule()
+    }
+
+    fun RegStopTask(task:Runnable) {
+        tasksWhenStop.add(task)
     }
 }

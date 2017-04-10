@@ -1,13 +1,13 @@
 package models.task
 
 import com.avaje.ebean.Model
+import com.avaje.ebean.annotation.WhenCreated
+import com.avaje.ebean.annotation.WhenModified
 import jodd.datetime.JDateTime
 import k.common.Helper
 import k.ebean.DB
-import models.BaseModel
-import javax.persistence.Column
-import javax.persistence.Entity
-import javax.persistence.Table
+import java.sql.Timestamp
+import javax.persistence.*
 
 /**
  * Created by kk on 16/9/19.
@@ -15,7 +15,19 @@ import javax.persistence.Table
 
 @Entity
 @Table(name = "plan_task")
-class PlanTask : BaseModel() {
+class PlanTask : Model() {
+
+    @Id
+    var id: Long? = null
+
+    @Version
+    var version: Long? = null
+
+    @WhenCreated
+    var whenCreated: Timestamp? = null
+
+    @WhenModified
+    var whenModified: Timestamp? = null
 
     @Column(columnDefinition = "TINYINT(1) COMMENT '是否要求顺序执行'")
     var require_seq: Boolean = false

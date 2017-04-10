@@ -69,7 +69,7 @@ object PlanTaskService {
             stopNow = true
             isRunning = false
 
-            Helper.DLog(AnsiColor.RED_B, "Start planTask service failed.\n${ExceptionUtil.exceptionChainToString(ex)}")
+            Helper.DLog(AnsiColor.RED_B, "Start planTask service failed.\n${ExceptionUtil.exceptionStackTraceToString(ex)}")
         }
     }
 
@@ -98,7 +98,7 @@ object PlanTaskService {
 
             Helper.DLog(AnsiColor.GREEN, "Plan Task Service Stopped......")
         } catch (ex: Exception) {
-            Logger.error(ExceptionUtil.exceptionChainToString(ex))
+            Logger.error(ExceptionUtil.exceptionStackTraceToString(ex))
         } finally {
             isRunning = false
         }
@@ -264,7 +264,7 @@ object PlanTaskService {
 
                 } catch (ex: Exception) {
                     loadedTasks.clear()
-                    Logger.error(ExceptionUtil.exceptionChainToString(ex))
+                    Logger.error(ExceptionUtil.exceptionStackTraceToString(ex))
                 }
             }
             Helper.DLog("Stop PlanningTaskLoader for requireSeq: $requireSeq")
@@ -281,7 +281,7 @@ object PlanTaskService {
             try {
                 process_task(task)
             } catch (ex: Exception) {
-                Logger.error(ExceptionUtil.exceptionChainToString(ex))
+                Logger.error(ExceptionUtil.exceptionStackTraceToString(ex))
             }
         },
                 delay,
@@ -311,7 +311,7 @@ object PlanTaskService {
                     DB.RunInTransaction {
                         task.refresh()
                         task.task_status = TaskStatus.Error.code
-                        task.remarks = ExceptionUtil.exceptionChainToString(ex)
+                        task.remarks = ExceptionUtil.exceptionStackTraceToString(ex)
                         task.save()
                     }
                 }
@@ -324,7 +324,7 @@ object PlanTaskService {
                 }
             }
         } catch (ex: Exception) {
-            Logger.error(ExceptionUtil.exceptionChainToString(ex))
+            Logger.error(ExceptionUtil.exceptionStackTraceToString(ex))
         }
     }
 
@@ -345,7 +345,7 @@ object PlanTaskService {
                     return false
                 }
             } catch (ex: Exception) {
-                Helper.DLog(AnsiColor.RED_B, "Start plan task service failed.\n${ExceptionUtil.exceptionChainToString(ex)}")
+                Helper.DLog(AnsiColor.RED_B, "Start plan task service failed.\n${ExceptionUtil.exceptionStackTraceToString(ex)}")
                 return false
             }
         } else {
