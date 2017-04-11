@@ -1,28 +1,18 @@
-def playVersion = '$PlayVersion$'
-def scalaVersion = '2.11'
-
-buildscript {
-    ext.kotlin_version = '$KotlinVersion$'
-    repositories {
-        maven {
-            url "https://plugins.gradle.org/m2/"
-        }
-    }
-    dependencies {
-        classpath "org.jetbrains.kotlin:kotlin-gradle-plugin:\$kotlin_version"
-        classpath "gradle.plugin.org.kt3k:ebean-enhance-plugin:2.0.5"
-    }
+plugins {
+    id "org.jetbrains.kotlin.jvm" version "1.1.1"
+    id "com.github.kt3k.ebean.enhance" version "3.0.0"
 }
 
-apply plugin: "kotlin"
-apply plugin: "com.github.kt3k.ebean.enhance"
+def playVersion = '$PlayVersion$'
+def scalaVersion = '2.11'
+def kotlin_version = '$KotlinVersion$'
 
 repositories {
-    jcenter()
     maven {
-        name "typesafe-maven-release"
-        url "https://repo.typesafe.com/typesafe/maven-releases"
+        name "aliyun-maven"
+        url "http://maven.aliyun.com/nexus/content/groups/public/"
     }
+    jcenter()
     ivy {
         name "typesafe-ivy-release"
         url "https://repo.typesafe.com/typesafe/ivy-releases"
@@ -32,12 +22,13 @@ repositories {
 
 dependencies {
     // compile fileTree(dir: 'libs', include: '*.jar')
-    // runtime fileTree(dir: 'libs', include: '*.jar')
     ['filters-helpers', 'play-logback', 'play-jdbc', 'play-java', 'play-cache', 'play-ws', 'play-java-ws'].each { playModule ->
         compile "com.typesafe.play:\${playModule}_\$scalaVersion:\$playVersion"
     }
-    compile "org.jetbrains.kotlin:kotlin-stdlib:\$kotlin_version"
-    compile "org.jetbrains.kotlin:kotlin-reflect:\$kotlin_version"
+
+    compile group: 'org.jetbrains.kotlin', name: 'kotlin-stdlib', version: "\$kotlin_version"
+    compile group: 'org.jetbrains.kotlin', name: 'kotlin-reflect', version: "\$kotlin_version"
+
     compile project(':subProjects:$sharedToolsPrjName$')
 }
 
