@@ -41,14 +41,6 @@ constructor(applicationLifecycle: ApplicationLifecycle,
         Hub.setCacheApi(cacheApi)
         Hub.setFormFactory(formFactory)
 
-        val runtimeClassPaths = ClassLoaderUtil.getDefaultClasspath(Hub.application().classloader()).map { it.absolutePath }.toHashSet()
-        System.getProperty("unManagedJars", "").split(":").forEach {
-            if (!runtimeClassPaths.contains(it)) {
-                Helper.DLog("Add unManagedJar: $it to runtime ClassPath")
-                ClassLoaderUtil.addFileToClassPath(File(it), Hub.application().classloader())
-            }
-        }
-
         applicationLifecycle.addStopHook {
             OnStop()
             CompletableFuture.completedFuture<Any>(null)

@@ -1,6 +1,6 @@
 plugins {
-    id "org.jetbrains.kotlin.jvm" version "1.1.1"
-    id "com.github.kt3k.ebean.enhance" version "3.0.0"
+    id "org.jetbrains.kotlin.jvm" version "$KotlinVersion$"
+    id "com.github.kt3k.ebean.enhance" version "2.0.5"
 }
 
 def playVersion = '$PlayVersion$'
@@ -34,10 +34,10 @@ dependencies {
     compile group: 'org.jetbrains.kotlin', name: 'kotlin-stdlib', version: "\$kotlin_version"
     compile group: 'org.jetbrains.kotlin', name: 'kotlin-reflect', version: "\$kotlin_version"
 
-    compile group: 'org.jodd', name: 'jodd-core', version: '3.8.1'
-    compile group: 'org.jodd', name: 'jodd-bean', version: '3.8.1'
-    compile group: 'org.jodd', name: 'jodd-http', version: '3.8.1'
-    compile group: 'org.jodd', name: 'jodd-mail', version: '3.8.1'
+    compile group: 'org.jodd', name: 'jodd-core', version: '3.8.5'
+    compile group: 'org.jodd', name: 'jodd-bean', version: '3.8.5'
+    compile group: 'org.jodd', name: 'jodd-http', version: '3.8.5'
+    compile group: 'org.jodd', name: 'jodd-mail', version: '3.8.5'
 
     compile group: 'mysql', name: 'mysql-connector-java', version: '5.1.39'
 

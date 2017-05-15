@@ -1,6 +1,6 @@
 package k.common.json
 
-import jodd.util.ReflectUtil
+import jodd.util.ClassUtil
 import k.common.Helper
 import org.apache.commons.lang3.reflect.TypeUtils
 import java.time.LocalDate
@@ -39,7 +39,7 @@ fun jsonType(kType: KType): JsonDataType {
 
 fun isOneOfTypes(lookupClass: Class<*>, vararg targetClasses: Class<*>): Boolean {
     for (tclass in targetClasses) {
-        if (ReflectUtil.isTypeOf(lookupClass, tclass)) {
+        if (ClassUtil.isTypeOf(lookupClass, tclass)) {
             return true
         }
     }
@@ -48,7 +48,7 @@ fun isOneOfTypes(lookupClass: Class<*>, vararg targetClasses: Class<*>): Boolean
 }
 
 fun isNumber(kType: KType): Boolean {
-    val rawType = ReflectUtil.getRawType(kType.javaType)
+    val rawType = ClassUtil.getRawType(kType.javaType)
 
     return isOneOfTypes(rawType,
             Byte::class.java,
@@ -62,7 +62,7 @@ fun isNumber(kType: KType): Boolean {
 }
 
 fun isString(kType: KType): Boolean {
-    val rawType = ReflectUtil.getRawType(kType.javaType)
+    val rawType = ClassUtil.getRawType(kType.javaType)
 
     if (isOneOfTypes(rawType,
             String::class.java,
@@ -78,7 +78,7 @@ fun isString(kType: KType): Boolean {
 }
 
 fun isDateTime(kType: KType): Boolean {
-    val rawType = ReflectUtil.getRawType(kType.javaType)
+    val rawType = ClassUtil.getRawType(kType.javaType)
     return isOneOfTypes(rawType,
             LocalDate::class.java,
             LocalDateTime::class.java,
@@ -109,7 +109,7 @@ fun isBasicType(kClass: KClass<*>): Boolean {
 }
 
 fun isBasicType(kType: KType):Boolean{
-    val rawType = ReflectUtil.getRawType(kType.javaType)
+    val rawType = ClassUtil.getRawType(kType.javaType)
     return isOneOfTypes(rawType,
             Int::class.java,
             Number::class.java,
@@ -142,34 +142,34 @@ fun isSimpleObject(kClass: KClass<*>): Boolean {
 }
 
 fun isMap(kType: KType): Boolean {
-    val rawType = ReflectUtil.getRawType(kType.javaType)
+    val rawType = ClassUtil.getRawType(kType.javaType)
     return isOneOfTypes(rawType, kotlin.collections.Map::class.java)
 }
 
 fun mapKeyType(kType: KType): Class<*> {
-//    val rawType = ReflectUtil.getRawType(kType.javaType)
-    return ReflectUtil.getComponentType(kType.javaType, 0)
+//    val rawType = ClassUtil.getRawType(kType.javaType)
+    return ClassUtil.getComponentType(kType.javaType, 0)
 }
 
 fun mapValueType(kType: KType): Class<*> {
-//    val rawType = ReflectUtil.getRawType(kType.javaType)
-    return ReflectUtil.getComponentType(kType.javaType, 1)
+//    val rawType = ClassUtil.getRawType(kType.javaType)
+    return ClassUtil.getComponentType(kType.javaType, 1)
 }
 
 fun isList(kType: KType): Boolean {
-    val rawType = ReflectUtil.getRawType(kType.javaType)
+    val rawType = ClassUtil.getRawType(kType.javaType)
     return isOneOfTypes(rawType,
             kotlin.collections.List::class.java,
             kotlin.collections.Set::class.java)
 }
 
 fun isArray(kType: KType): Boolean {
-    val rawType = ReflectUtil.getRawType(kType.javaType)
+    val rawType = ClassUtil.getRawType(kType.javaType)
     return TypeUtils.isArrayType(rawType)
 }
 
 fun listElementType(kType: KType): Class<*> {
-    return ReflectUtil.getComponentType(kType.javaType, 0)
+    return ClassUtil.getComponentType(kType.javaType, 0)
 }
 
 

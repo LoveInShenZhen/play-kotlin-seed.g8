@@ -1,7 +1,7 @@
 package k.common.apidoc
 
 
-import jodd.util.ReflectUtil
+import jodd.util.ClassUtil
 import k.aop.annotations.Comment
 import k.aop.annotations.JsonApi
 import k.common.Helper
@@ -42,7 +42,7 @@ class RouteInfo(
     }
 
     fun ControllerMethod(): Method {
-        val methods = ReflectUtil.getAccessibleMethods(ControllerClass())
+        val methods = ClassUtil.getAccessibleMethods(ControllerClass())
         val methodName = ControllerMethodName()
         return methods.find { it.name == methodName }!!
     }

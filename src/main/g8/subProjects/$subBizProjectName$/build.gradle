@@ -1,6 +1,6 @@
 plugins {
-    id "org.jetbrains.kotlin.jvm" version "1.1.1"
-    id "com.github.kt3k.ebean.enhance" version "3.0.0"
+    id "org.jetbrains.kotlin.jvm" version "$KotlinVersion$"
+    id "com.github.kt3k.ebean.enhance" version "2.0.5"
 }
 
 def playVersion = '$PlayVersion$'
