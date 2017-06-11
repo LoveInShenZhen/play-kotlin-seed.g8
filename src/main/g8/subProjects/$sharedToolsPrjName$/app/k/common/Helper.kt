@@ -27,6 +27,10 @@ object Helper {
             throw BizLogicException("Can not load class: %s", class_name)
         }
 
+        val f = File("")
+        f.forEachLine{
+
+        }
     }
 
     fun getFile(path: String): File {

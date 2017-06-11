@@ -1,5 +1,6 @@
 package k.common
 
+import k.common.apidoc.DefinedApis
 import k.controllers.JsonpController
 import k.reply.ReplyBase
 import play.Configuration
@@ -9,7 +10,6 @@ import play.api.routing.Router
 import play.http.DefaultHttpErrorHandler
 import play.mvc.Http
 import play.mvc.Result
-import play.mvc.Results
 import java.util.concurrent.CompletableFuture
 import java.util.concurrent.CompletionStage
 import javax.inject.Inject
@@ -20,10 +20,11 @@ import javax.inject.Provider
  */
 class ErrorHandler
 @Inject
-constructor(configuration: Configuration?,
-            environment: Environment?,
-            sourceMapper: OptionalSourceMapper?,
-            routes: Provider<Router>?) : DefaultHttpErrorHandler(configuration, environment, sourceMapper, routes) {
+constructor(configuration: Configuration,
+            environment: Environment,
+            sourceMapper: OptionalSourceMapper,
+            routes: Provider<Router>,
+            val apis : DefinedApis) : DefaultHttpErrorHandler(configuration, environment, sourceMapper, routes) {
 
 //    override fun onClientError(request: Http.RequestHeader?, statusCode: Int, message: String?): CompletionStage<Result> {
 //        if (request!!.uri().startsWith("/api/")) {
@@ -37,15 +38,15 @@ constructor(configuration: Configuration?,
 //    }
 
     override fun onServerError(request: Http.RequestHeader?, exception: Throwable?): CompletionStage<Result> {
-        if (request!!.uri().startsWith("/api/")) {
+        if (apis.IsJsonApi(request!!.path())) {
+            Helper.DLog(request!!.uri())
             val reply = ReplyBase()
             if (exception != null) {
                 reply.OnError(exception)
             }
             return CompletableFuture.completedFuture(JsonpController.ok(reply))
         } else {
-            return CompletableFuture.completedFuture(Results.internalServerError("A server error occurred: " + exception!!.message))
-
+            return super.onServerError(request, exception)
         }
     }
 

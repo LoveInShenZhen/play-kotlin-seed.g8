@@ -6,7 +6,6 @@ import k.common.Helper
 import k.common.json.*
 import kotlin.reflect.KClass
 import kotlin.reflect.full.memberProperties
-import kotlin.reflect.memberProperties
 
 
 /**

@@ -20,7 +20,6 @@ import k.common.Hub
 import javax.persistence.Entity
 import javax.persistence.Table
 import kotlin.reflect.full.memberProperties
-import kotlin.reflect.memberProperties
 
 internal class IndexInfo(var indexName: String) {
 

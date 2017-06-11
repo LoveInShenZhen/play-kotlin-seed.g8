@@ -1,7 +1,7 @@
 package k.controllers
 
-import com.fasterxml.jackson.databind.JsonNode
 import jodd.util.StringUtil
+import k.common.Helper
 import k.reply.ReplyBase
 import org.apache.commons.codec.EncoderException
 import org.apache.commons.codec.net.URLCodec
@@ -18,21 +18,17 @@ import play.mvc.Results
 open class JsonpController : Controller() {
     companion object {
 
-
-        fun ok(content: JsonNode): Result {
-
-            ctx().args.put("api_reply", content)
+        fun ok(reply: ReplyBase): Result {
+            if (ctx().args.getOrDefault("USE_ETAG", false) as Boolean) {
+                ctx().args.put("api_reply_etag", Helper.SHA1OfString(reply.toJsonStr()))
+            }
 
             val callback = Http.Context.current().request().getQueryString("callback")
             if (StringUtils.isBlank(callback)) {
-                return Controller.ok(content)
+                return Controller.ok(reply.toJsonNode())
             } else {
-                return Results.ok(Jsonp(callback, content))
+                return Results.ok(Jsonp(callback, reply.toJsonNode()))
             }
-        }
-
-        fun ok(reply: ReplyBase): Result {
-            return Controller.ok(reply.toJsonNode())
         }
 
         //    Nginx 配置:
@@ -58,11 +54,7 @@ open class JsonpController : Controller() {
                 return Controller.request().secure()
             }
 
-            if (use_ssl.equals("true", ignoreCase = true) || use_ssl.equals("yes", ignoreCase = true)) {
-                return true
-            } else {
-                return false
-            }
+            return use_ssl.equals("true", ignoreCase = true) || use_ssl.equals("yes", ignoreCase = true)
         }
 
         fun Protocol(): String {

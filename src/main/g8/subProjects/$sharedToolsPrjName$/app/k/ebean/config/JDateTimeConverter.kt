@@ -2,8 +2,7 @@ package models
 
 import com.avaje.ebean.config.ScalarTypeConverter
 import jodd.datetime.JDateTime
-
-import java.util.Date
+import java.util.*
 
 /**
  * Created by kk on 16/2/21.

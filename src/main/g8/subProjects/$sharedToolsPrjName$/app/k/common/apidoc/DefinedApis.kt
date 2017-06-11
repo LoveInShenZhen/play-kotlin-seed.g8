@@ -13,21 +13,32 @@ class DefinedApis
 @Inject
 private constructor(private val routerProvider: Provider<Router>) {
 
+    private var apiRoutes:List<RouteInfo>? = null
 
     fun ApiRoutes(): List<RouteInfo> {
-        return this.routerProvider.get().documentation().map {
-            RouteInfo(httpMethod = it.httpMethod,
-                    url = it.pathPattern,
-                    controllerPath = it.controllerMethodInvocation)
-        }.filter { it.JsonApiAnnotation() != null }
+        if (apiRoutes == null) {
+            apiRoutes = this.routerProvider.get().documentation().map {
+                RouteInfo(httpMethod = it.httpMethod,
+                        url = it.pathPattern,
+                        controllerPath = it.controllerMethodInvocation)
+            }.filter { it.JsonApiAnnotation() != null }
+        }
+        return apiRoutes!!
     }
 
+    private var jsonApis : ApiDefinition? = null
     fun JsonApis(): ApiDefinition {
-        val apis = ApiDefinition()
-        ApiRoutes().map { it.BuildApiInfo() }.forEach {
-            apis.AddApiInfo(it)
+        if (jsonApis == null) {
+            jsonApis = ApiDefinition()
+            ApiRoutes().map { it.BuildApiInfo() }.forEach {
+                jsonApis!!.AddApiInfo(it)
+            }
         }
 
-        return apis
+        return jsonApis!!
+    }
+
+    fun IsJsonApi(urlPath: String): Boolean {
+        return ApiRoutes().find { it.url == urlPath } != null
     }
 }

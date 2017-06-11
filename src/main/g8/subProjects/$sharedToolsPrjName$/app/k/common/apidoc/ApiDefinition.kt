@@ -11,12 +11,7 @@ import k.reply.ReplyBase
 class ApiDefinition : ReplyBase() {
 
     @Comment("api 分组列表")
-    var groups: MutableList<ApiGroup>
-
-    init {
-        groups = mutableListOf<ApiGroup>()
-
-    }
+    var groups: MutableList<ApiGroup> = mutableListOf()
 
     fun GetApiGroupByName(groupName: String): ApiGroup {
 

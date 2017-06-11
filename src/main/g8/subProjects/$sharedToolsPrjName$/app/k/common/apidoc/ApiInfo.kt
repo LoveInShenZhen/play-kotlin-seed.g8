@@ -9,10 +9,7 @@ import kotlin.reflect.KClass
 import kotlin.reflect.full.functions
 import kotlin.reflect.full.memberFunctions
 import kotlin.reflect.full.memberProperties
-import kotlin.reflect.functions
 import kotlin.reflect.jvm.javaType
-import kotlin.reflect.memberFunctions
-import kotlin.reflect.memberProperties
 
 /**
  * Created by kk on 14/11/5.

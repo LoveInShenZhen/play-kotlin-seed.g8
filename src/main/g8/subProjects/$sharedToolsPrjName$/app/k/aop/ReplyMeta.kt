@@ -1,6 +1,5 @@
 package k.aop
 
-import kotlin.annotation.Retention
 import kotlin.reflect.KClass
 
 /**
