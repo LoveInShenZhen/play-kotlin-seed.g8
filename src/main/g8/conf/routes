@@ -17,6 +17,8 @@ GET        /api/apiIndex                            controllers.BuiltIn.ApiIndex
 GET        /api/apiSample                           controllers.BuiltIn.ApiTest(apiUrl)
 GET        /api/apiMarkdown                         controllers.BuiltIn.ApiMarkdown
 GET        /api/CreateIndexSql                      controllers.BuiltIn.CreateIndexSql
+GET        /api/CreateTablesSql                     controllers.BuiltIn.CreateTablesSql
+GET        /api/DropTablesSql                       controllers.BuiltIn.DropTablesSql
 
 # Map static resources from the /public folder to the /assets URL path
 GET     /assets/*file               controllers.Assets.versioned(path="/public", file: Asset)

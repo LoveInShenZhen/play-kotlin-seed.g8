@@ -1,5 +1,7 @@
 package controllers
 
+import com.avaje.ebean.dbmigration.model.CurrentModel
+import com.avaje.ebeaninternal.api.SpiEbeanServer
 import controllers.replys.RuntimeClassPathReply
 import k.aop.annotations.Comment
 import k.aop.annotations.JsonApi
@@ -7,13 +9,14 @@ import k.common.apidoc.ApiDefinition
 import k.common.apidoc.DefinedApis
 import k.common.template.ResourceTemplateHelper
 import k.controllers.JsonpController
+import k.ebean.DB
 import k.ebean.DbIndex
 import play.mvc.Result
 import javax.inject.Inject
 
-/**
- * Created by kk on 16/9/18.
- */
+//
+// Created by kk on 16/9/18.
+//
 
 @Comment("内置 API 方法")
 class BuiltIn
@@ -59,5 +62,17 @@ constructor(var definedApis: DefinedApis,
 
     fun CreateIndexSql(): Result {
         return ok(DbIndex.GetCreateIndexSql()).`as`("text/plain; charset=UTF-8")
+    }
+
+    fun CreateTablesSql() : Result {
+        val spiServer = DB.Default() as SpiEbeanServer
+        val ddl = CurrentModel(spiServer)
+        return ok(ddl.createDdl).`as`("text/plain; charset=UTF-8")
+    }
+
+    fun DropTablesSql() : Result {
+        val spiServer = DB.Default() as SpiEbeanServer
+        val ddl = CurrentModel(spiServer)
+        return ok(ddl.dropAllDdl).`as`("text/plain; charset=UTF-8")
     }
 }
