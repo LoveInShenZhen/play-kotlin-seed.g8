@@ -76,9 +76,6 @@ class PlanTask : Model() {
                     .findUnique()
             if (oldTask == null) {
                 addTask(task, requireSeq, seqType, planRunTime, tag)
-            } else {
-                oldTask.plan_run_time = planRunTime
-                oldTask.save()
             }
         }
 
