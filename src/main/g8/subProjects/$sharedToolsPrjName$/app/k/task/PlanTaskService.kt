@@ -109,39 +109,44 @@ object PlanTaskService {
             while (true) {
                 if (stopNow) break
 
-                val tasks = DB.RunInTransaction<List<PlanTask>> {
-                    val taskList = PlanTask.where()
-                            .eq("require_seq", true)
-                            .eq("task_status", TaskStatus.WaitingInDB.code)
-                            .isNull("plan_run_time")
-                            .setMaxRows(100)
-                            .findList()
+                try {
+                    val tasks = DB.RunInTransaction<List<PlanTask>> {
+                        val taskList = PlanTask.where()
+                                .eq("require_seq", true)
+                                .eq("task_status", TaskStatus.WaitingInDB.code)
+                                .isNull("plan_run_time")
+                                .setMaxRows(100)
+                                .findList()
 
-                    taskList.forEach { it.task_status = TaskStatus.WaitingInQueue.code }
+                        taskList.forEach { it.task_status = TaskStatus.WaitingInQueue.code }
 
-                    DB.Default().saveAll(taskList)
+                        DB.Default().saveAll(taskList)
 
-                    return@RunInTransaction taskList
-                }
-
-                if (tasks.size == 0) {
-                    // 没有任务需要执行, 等候新任务通知
-                    try {
-                        synchronized(taskNotifier, {
-                            taskNotifier.wait(taskLoaderWaitTime * 1000L)
-                        })
-                    } catch (ex: Exception) {
-                        // do nothing
+                        return@RunInTransaction taskList
                     }
-                } else {
-                    var idx = 0
-                    while (idx < tasks.size) {
-                        if (stopNow) return@Runnable
 
-                        if (this.seqTaskQueue.offer(tasks[idx], 1000, TimeUnit.MILLISECONDS)) {
-                            idx++
+                    if (tasks.isEmpty()) {
+                        // 没有任务需要执行, 等候新任务通知
+                        try {
+                            synchronized(taskNotifier, {
+                                taskNotifier.wait(taskLoaderWaitTime * 1000L)
+                            })
+                        } catch (ex: Exception) {
+                            // do nothing
+                        }
+                    } else {
+                        var idx = 0
+                        while (idx < tasks.size) {
+                            if (stopNow) return@Runnable
+
+                            if (this.seqTaskQueue.offer(tasks[idx], 1000, TimeUnit.MILLISECONDS)) {
+                                idx++
+                            }
                         }
                     }
+                } catch (ex: Exception) {
+                    Logger.error(ExceptionUtil.exceptionStackTraceToString(ex))
+                    Thread.sleep(60 * 1000)
                 }
             }
             Helper.DLog("Stop SeqTaskLoader")
@@ -167,40 +172,46 @@ object PlanTaskService {
             while (true) {
                 if (stopNow) break
 
-                val tasks = DB.RunInTransaction<List<PlanTask>> {
-                    val taskList = PlanTask.where()
-                            .eq("require_seq", false)
-                            .eq("task_status", TaskStatus.WaitingInDB.code)
-                            .isNull("plan_run_time")
-                            .setMaxRows(100)
-                            .findList()
+                try {
+                    val tasks = DB.RunInTransaction<List<PlanTask>> {
+                        val taskList = PlanTask.where()
+                                .eq("require_seq", false)
+                                .eq("task_status", TaskStatus.WaitingInDB.code)
+                                .isNull("plan_run_time")
+                                .setMaxRows(100)
+                                .findList()
 
-                    taskList.forEach { it.task_status = TaskStatus.WaitingInQueue.code }
+                        taskList.forEach { it.task_status = TaskStatus.WaitingInQueue.code }
 
-                    DB.Default().saveAll(taskList)
+                        DB.Default().saveAll(taskList)
 
-                    return@RunInTransaction taskList
-                }
-
-                if (tasks.size == 0) {
-                    // 没有任务需要执行, 等候新任务通知
-                    try {
-                        synchronized(taskNotifier, {
-                            taskNotifier.wait(taskLoaderWaitTime * 1000L)
-                        })
-                    } catch (ex: Exception) {
-                        // do nothing
+                        return@RunInTransaction taskList
                     }
-                } else {
-                    var idx = 0
-                    while (idx < tasks.size) {
-                        if (stopNow) return@Runnable
 
-                        if (this.parallerTaskQueue.offer(tasks[idx], 1000, TimeUnit.MILLISECONDS)) {
-                            idx++
+                    if (tasks.isEmpty()) {
+                        // 没有任务需要执行, 等候新任务通知
+                        try {
+                            synchronized(taskNotifier, {
+                                taskNotifier.wait(taskLoaderWaitTime * 1000L)
+                            })
+                        } catch (ex: Exception) {
+                            // do nothing
+                        }
+                    } else {
+                        var idx = 0
+                        while (idx < tasks.size) {
+                            if (stopNow) return@Runnable
+
+                            if (this.parallerTaskQueue.offer(tasks[idx], 1000, TimeUnit.MILLISECONDS)) {
+                                idx++
+                            }
                         }
                     }
+                } catch (ex: Exception) {
+                    Logger.error(ExceptionUtil.exceptionStackTraceToString(ex))
+                    Thread.sleep(60 * 1000)
                 }
+
             }
             Helper.DLog("Stop Paraller TaskLoader")
         })
@@ -265,6 +276,7 @@ object PlanTaskService {
                 } catch (ex: Exception) {
                     loadedTasks.clear()
                     Logger.error(ExceptionUtil.exceptionStackTraceToString(ex))
+                    Thread.sleep(60 * 1000)
                 }
             }
             Helper.DLog("Stop PlanningTaskLoader for requireSeq: $requireSeq")
